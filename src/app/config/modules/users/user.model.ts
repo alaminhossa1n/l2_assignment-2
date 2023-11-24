@@ -15,7 +15,7 @@ const orderSchema = new Schema({
 
 //schema
 const userSchema = new Schema<User>({
-  userId: { type: Number, required: true },
+  userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   fullName: {
