@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserServices } from "../user.service";
+import { UserServices } from "./user.service";
 import userValidationSchema from "./user.validation";
 
 //create user
