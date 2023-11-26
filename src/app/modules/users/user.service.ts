@@ -53,10 +53,34 @@ const deleteUserFromDB = async (id: string) => {
   return result;
 };
 
+//add orders
+const addNewOrdersToDB = async (
+  id: string,
+  newOrders: {
+    productName: string;
+    price: number;
+    quantity: number;
+  }
+) => {
+  const isUserExist = await User.isUserExist(id);
+
+  if (!isUserExist) {
+    throw new Error();
+  }
+
+  const result = await User.findOneAndUpdate(
+    { userId: id },
+    { $push: { orders: { $each: [newOrders] } } },
+    {returnDocument:"after", projection:{orders:1}}
+  );
+
+  return result;
+};
 export const UserServices = {
   createUserIntoDB,
   getAllUserFromDB,
   getSingleUserFromDB,
   updateUserFromDB,
-  deleteUserFromDB
+  deleteUserFromDB,
+  addNewOrdersToDB
 };
