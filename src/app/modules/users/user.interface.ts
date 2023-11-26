@@ -22,7 +22,7 @@ export type TUser = {
     price: number;
     quantity: number;
   }[];
-};
+};g
 
 export interface UserModel extends Model<TUser> {
   isUserExist(id: string): Promise<TUser | null>;

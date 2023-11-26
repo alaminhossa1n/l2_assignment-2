@@ -55,7 +55,6 @@ const getSingleUser = async (req: Request, res: Response) => {
       message: "User fetched successfully!",
       data: result,
     });
-
   } catch (err) {
     res.status(200).json({
       success: false,
@@ -65,15 +64,65 @@ const getSingleUser = async (req: Request, res: Response) => {
         description: "User not found!",
       },
     });
-    console.log(err);
   }
 };
 
 //update a student
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const { updatedUser } = req.body;
+    const zodParseData = userValidationSchema.parse(updatedUser);
 
+    // call service
+    const result = await UserServices.updateUserFromDB(userId, zodParseData);
+
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully!",
+      data: result,
+    });
+  } catch (err) {
+    res.status(200).json({
+      success: false,
+      message: "User not found",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
+//delete a student
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    // call service
+    const result = await UserServices.deleteUserFromDB(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully!",
+      data: result,
+    });
+  } catch (err) {
+    res.status(200).json({
+      success: false,
+      message: "User not found",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
 
 export const UserController = {
   createUser,
   getAllUsers,
   getSingleUser,
+  updateUser,
+  deleteUser
 };
