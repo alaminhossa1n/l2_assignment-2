@@ -16,15 +16,19 @@ const createUser = async (req: Request, res: Response) => {
       message: "User created successfully!",
       data: result,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    res.status(200).json({
+      success: true,
+      message: err.message || "Something Wrong",
+      data: err,
+    });
   }
 };
 
 // get users
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const result = await UserServices.getAllUser();
+    const result = await UserServices.getAllUserFromDB();
 
     res.status(200).json({
       success: true,
@@ -32,7 +36,11 @@ const getAllUsers = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(200).json({
+      success: false,
+      message: "Something Wrong",
+      data: err,
+    });
   }
 };
 
@@ -40,18 +48,30 @@ const getAllUsers = async (req: Request, res: Response) => {
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const result = await UserServices.getSingleUser(userId);
-    console.log(userId);
-    console.log(result);
+    const result = await UserServices.getSingleUserFromDB(userId);
+
     res.status(200).json({
       success: true,
       message: "User fetched successfully!",
       data: result,
     });
+
   } catch (err) {
+    res.status(200).json({
+      success: false,
+      message: "User not found",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
     console.log(err);
   }
 };
+
+//update a student
+
+
 export const UserController = {
   createUser,
   getAllUsers,

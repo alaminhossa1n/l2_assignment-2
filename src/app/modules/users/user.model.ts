@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { User } from "./user.interface";
+import { TUser, UserModel } from "./user.interface";
 
 const addressSchema = new Schema({
   street: { type: String, required: true },
@@ -14,8 +14,8 @@ const orderSchema = new Schema({
 });
 
 //schema
-const userSchema = new Schema<User>({
-  userId: { type: Number, required: true, unique: true },
+const userSchema = new Schema<TUser, UserModel>({
+  userId: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   fullName: {
@@ -30,5 +30,16 @@ const userSchema = new Schema<User>({
   orders: [{ type: orderSchema }],
 });
 
+//post
+userSchema.post("save", function (doc, next) {
+  doc.password = "";
+  next();
+});
+
+userSchema.statics.isUserExist = async function (id: string) {
+  const existingUser = await User.findOne({ userId: id });
+  return existingUser;
+};
+
 // model
-export const UserModel = model<User>("User", userSchema);
+export const User = model<TUser, UserModel>("User", userSchema);
