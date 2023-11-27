@@ -71,7 +71,7 @@ const getSingleUser = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { updatedUser } = req.body;
+    const { user: updatedUser } = req.body;
     const zodParseData = userValidationSchema.parse(updatedUser);
 
     // call service
