@@ -118,13 +118,11 @@ const deleteUser = async (req: Request, res: Response) => {
     });
   }
 };
-
+//add new order
 const addNewOrder = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    console.log(userId);
     const newOrder = req.body;
-    console.log(newOrder);
 
     // call service
     const result = await UserServices.addNewOrdersToDB(userId, newOrder);
@@ -147,6 +145,58 @@ const addNewOrder = async (req: Request, res: Response) => {
   }
 };
 
+//get order by id
+const getOrdersById = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    // call service
+    const result = await UserServices.getOrdersByID(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Order fetched successfully!",
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({
+      success: false,
+      message: "User not found...",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
+// count total price by id
+const getPriceById = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    // call service
+    const result = await UserServices.getTotalPriceByID(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Total price calculated successfully!",
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({
+      success: false,
+      message: "User not found...",
+      error: {
+        code: 404,
+        description: "User not found!",
+      },
+    });
+  }
+};
+
 export const UserController = {
   createUser,
   getAllUsers,
@@ -154,4 +204,6 @@ export const UserController = {
   updateUser,
   deleteUser,
   addNewOrder,
+  getOrdersById,
+  getPriceById,
 };

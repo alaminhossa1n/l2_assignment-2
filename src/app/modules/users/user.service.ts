@@ -71,16 +71,46 @@ const addNewOrdersToDB = async (
   const result = await User.findOneAndUpdate(
     { userId: id },
     { $push: { orders: { $each: [newOrders] } } },
-    {returnDocument:"after", projection:{orders:1}}
+    { returnDocument: "after", projection: { orders: 1 } }
   );
-
   return result;
 };
+
+//Retrieve all orders for a specific user
+const getOrdersByID = async (userId: string) => {
+  const isUserExist = await User.isUserExist(userId);
+
+  if (!isUserExist) {
+    throw new Error();
+  }
+
+  const result = await User.find({ userId }, { orders: 1 });
+  return result;
+};
+
+//Calculate Total Price of Orders for a Specific User
+const getTotalPriceByID = async (userId: string) => {
+  const isUserExist = await User.isUserExist(userId);
+
+  if (!isUserExist) {
+    throw new Error();
+  }
+
+  const result = await User.aggregate([
+    { $match: { userId } },
+    { $unwind: "$orders" },
+    { $group: { _id: null, totalPrice:{$sum:"$orders.price"} } },
+  ]);
+  return result;
+};
+
 export const UserServices = {
   createUserIntoDB,
   getAllUserFromDB,
   getSingleUserFromDB,
   updateUserFromDB,
   deleteUserFromDB,
-  addNewOrdersToDB
+  addNewOrdersToDB,
+  getOrdersByID,
+  getTotalPriceByID
 };
