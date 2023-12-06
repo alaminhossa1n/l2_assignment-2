@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { Model } from "mongoose";
 
 export type TUser = {
-  userId: string;
+  userId: number;
   username: string;
   password: string;
   fullName: {
@@ -10,7 +11,7 @@ export type TUser = {
   };
   age: number;
   email: string;
-  isActive: "active" | "inActive";
+  isActive: boolean;
   hobbies: string[];
   address: {
     street: string;
@@ -25,5 +26,5 @@ export type TUser = {
 };
 
 export interface UserModel extends Model<TUser> {
-  isUserExist(id: string): Promise<TUser | null>;
+  isUserExist(id: number): Promise<TUser | null>;
 }

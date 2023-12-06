@@ -16,13 +16,17 @@ const getAllUserFromDB = async () => {
     age: 1,
     email: 1,
     address: 1,
+    _id: 0,
   });
   return result;
 };
 
-const getSingleUserFromDB = async (id: string) => {
+const getSingleUserFromDB = async (id: number) => {
   if (await User.isUserExist(id)) {
-    const result = await User.findOne({ userId: id });
+    const result = await User.findOne({ userId: id }).select({
+      _id: 0,
+      password: 0,
+    });
     return result;
   } else {
     throw new Error();
@@ -30,19 +34,23 @@ const getSingleUserFromDB = async (id: string) => {
 };
 
 //update user
-const updateUserFromDB = async (id: string, updatedUser: TUser) => {
+const updateUserFromDB = async (id: number, updatedUser: TUser) => {
   const isUserExist = await User.isUserExist(id);
 
   if (!isUserExist) {
-    throw new Error();
+    throw new Error("User not Found");
   }
 
-  const result = await User.updateOne({ userId: id }, { $set: updatedUser });
+  const result = await User.findOneAndUpdate(
+    { userId: id },
+    { $set: updatedUser },
+    { new: true }
+  );
   return result;
 };
 
 //delete user
-const deleteUserFromDB = async (id: string) => {
+const deleteUserFromDB = async (id: number) => {
   const isUserExist = await User.isUserExist(id);
 
   if (!isUserExist) {
@@ -55,7 +63,7 @@ const deleteUserFromDB = async (id: string) => {
 
 //add orders
 const addNewOrdersToDB = async (
-  id: string,
+  id: number,
   newOrders: {
     productName: string;
     price: number;
@@ -77,7 +85,7 @@ const addNewOrdersToDB = async (
 };
 
 //Retrieve all orders for a specific user
-const getOrdersByID = async (userId: string) => {
+const getOrdersByID = async (userId: number) => {
   const isUserExist = await User.isUserExist(userId);
 
   if (!isUserExist) {
@@ -89,7 +97,7 @@ const getOrdersByID = async (userId: string) => {
 };
 
 //Calculate Total Price of Orders for a Specific User
-const getTotalPriceByID = async (userId: string) => {
+const getTotalPriceByID = async (userId: number) => {
   const isUserExist = await User.isUserExist(userId);
 
   if (!isUserExist) {
@@ -99,7 +107,7 @@ const getTotalPriceByID = async (userId: string) => {
   const result = await User.aggregate([
     { $match: { userId } },
     { $unwind: "$orders" },
-    { $group: { _id: null, totalPrice:{$sum:"$orders.price"} } },
+    { $group: { _id: null, totalPrice: { $sum: "$orders.price" } } },
   ]);
   return result;
 };
@@ -112,5 +120,5 @@ export const UserServices = {
   deleteUserFromDB,
   addNewOrdersToDB,
   getOrdersByID,
-  getTotalPriceByID
+  getTotalPriceByID,
 };

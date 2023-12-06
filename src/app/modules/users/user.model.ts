@@ -15,7 +15,7 @@ const orderSchema = new Schema({
 
 //schema
 const userSchema = new Schema<TUser, UserModel>({
-  userId: { type: String, required: true, unique: true },
+  userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   fullName: {
@@ -24,7 +24,7 @@ const userSchema = new Schema<TUser, UserModel>({
   },
   age: { type: Number, required: true },
   email: { type: String, required: true },
-  isActive: ["active", "inActive"],
+  isActive: { type: Boolean },
   hobbies: [{ type: String }],
   address: { type: addressSchema, required: true },
   orders: [{ type: orderSchema }],
@@ -36,7 +36,7 @@ userSchema.post("save", function (doc, next) {
   next();
 });
 
-userSchema.statics.isUserExist = async function (id: string) {
+userSchema.statics.isUserExist = async function (id: number) {
   const existingUser = await User.findOne({ userId: id });
   return existingUser;
 };

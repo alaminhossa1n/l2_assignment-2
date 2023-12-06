@@ -48,7 +48,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const result = await UserServices.getSingleUserFromDB(userId);
+    const result = await UserServices.getSingleUserFromDB(Number(userId));
 
     res.status(200).json({
       success: true,
@@ -71,11 +71,13 @@ const getSingleUser = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { user: updatedUser } = req.body;
-    const zodParseData = userValidationSchema.parse(updatedUser);
+    const zodParseData = userValidationSchema.parse(req.body);
 
     // call service
-    const result = await UserServices.updateUserFromDB(userId, zodParseData);
+    const result = await UserServices.updateUserFromDB(
+      Number(userId),
+      zodParseData
+    );
 
     res.status(200).json({
       success: true,
@@ -100,7 +102,7 @@ const deleteUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
 
     // call service
-    const result = await UserServices.deleteUserFromDB(userId);
+    const result = await UserServices.deleteUserFromDB(Number(userId));
 
     res.status(200).json({
       success: true,
@@ -125,7 +127,10 @@ const addNewOrder = async (req: Request, res: Response) => {
     const newOrder = req.body;
 
     // call service
-    const result = await UserServices.addNewOrdersToDB(userId, newOrder);
+    const result = await UserServices.addNewOrdersToDB(
+      Number(userId),
+      newOrder
+    );
 
     res.status(200).json({
       success: true,
@@ -151,7 +156,7 @@ const getOrdersById = async (req: Request, res: Response) => {
     const { userId } = req.params;
 
     // call service
-    const result = await UserServices.getOrdersByID(userId);
+    const result = await UserServices.getOrdersByID(Number(userId));
 
     res.status(200).json({
       success: true,
@@ -177,7 +182,7 @@ const getPriceById = async (req: Request, res: Response) => {
     const { userId } = req.params;
 
     // call service
-    const result = await UserServices.getTotalPriceByID(userId);
+    const result = await UserServices.getTotalPriceByID(Number(userId));
 
     res.status(200).json({
       success: true,
