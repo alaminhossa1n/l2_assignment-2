@@ -40,12 +40,11 @@ const updateUserFromDB = async (id: number, updatedUser: TUser) => {
   if (!isUserExist) {
     throw new Error("User not Found");
   }
-
   const result = await User.findOneAndUpdate(
     { userId: id },
     { $set: updatedUser },
     { new: true }
-  );
+  ).select({ password: 0 });
   return result;
 };
 
