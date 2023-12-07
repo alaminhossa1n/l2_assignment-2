@@ -75,8 +75,7 @@ const updateUser = async (req: Request, res: Response) => {
 
     // call service
     const result = await UserServices.updateUserFromDB(
-      Number(userId),
-      zodParseData
+      Number(userId), zodParseData
     );
 
     res.status(200).json({
